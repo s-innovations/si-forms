@@ -260,6 +260,49 @@ export class InputLayout<T extends number | string> extends JSXLayout<InputAttri
 }
 
 
+export function applyRipplelinks(element:HTMLElement){
+    for (let link of Array.prototype.slice.call(element.querySelectorAll(".ripplelink")) as HTMLButtonElement[]) {
+        link.addEventListener("mouseup", (evt) => {
+            if (link.querySelectorAll(".ink").length === 0) {
+                link.appendChild(<span class="ink"></span> as HTMLElement);
+
+            }
+
+            let ink = link.querySelector(".ink") as HTMLElement;
+
+            ink.classList.remove("animate");
+            setTimeout(() => {
+                //   let bb = ink.getBoundingClientRect();
+                // console.log(bb.width);
+                console.log(ink.clientWidth);
+
+                if (!ink.clientHeight && !ink.clientWidth) {
+                    let d = Math.min(link.offsetWidth, link.offsetHeight, 100);
+                    console.log(d);
+                    ink.style.height = d + "px";
+                    ink.style.width = d + "px";
+
+                }
+
+                let offset = link.getBoundingClientRect();
+                //bb = ink.getBoundingClientRect();
+                console.log([evt.pageX, offset.left, ink.clientWidth / 2]);
+                let x = evt.pageX - offset.left - ink.clientWidth / 2;
+                let y = evt.pageY - offset.top - ink.clientHeight / 2;
+
+
+                ink.style.top = y + 'px';
+                ink.style.left = x + 'px';
+                ink.classList.add("animate");
+
+            });
+
+            return false;
+        });
+
+    }
+}
+
 export class TextInputLayout extends InputLayout<string> {
 
  
