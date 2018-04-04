@@ -1,5 +1,5 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.4",
     "name": "si-forms",
     "author": "Poul K. Sorensen <pks@s-innovations.net> (http://twitter.com/pksorensen)",
     "homepage": "https://www.s-innovations.net",
@@ -20,5 +20,9 @@
     "files": [
         "artifacts"
     ],
+    "scripts": {
+        "tsc": "node_modules/.bin/tsc",
+        "prepublish": "npm run tsc && grunt copy"
+    },
     "typings": "artifacts/typings/index.d.ts"
 }

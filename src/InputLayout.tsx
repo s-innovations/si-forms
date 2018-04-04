@@ -4,7 +4,7 @@ import { KnockoutJsxFactory, valueBinding, ValueUpdate, ValueAllowUnset, Binding
  
 import { observable, subscribe, Observable, subscribeOnce, defaults } from "si-decorators";
 import * as ko from "knockout";
-import "css!./content/FormImput.less";
+import "css!./content/FormInputs.less";
 
 export interface InputAttributes<T> {
     label: string;
@@ -257,4 +257,47 @@ export class InputLayout<T extends number | string> extends JSXLayout<InputAttri
     }
 
 
+}
+
+
+export class TextInputLayout extends InputLayout<string> {
+
+ 
+
+    constructor(attributes: InputAttributes<string>) {
+        super(Object.assign({ type: "text" } as InputAttributeInternal, attributes));
+
+        this.withKeyupValueUpdate();
+    }
+}
+
+export class EmailInputLayout extends InputLayout<string> {
+
+    
+
+    constructor(attributes: InputAttributes<string>) {
+        super(Object.assign({ type: "email", autoComplete:"email" } as InputAttributeInternal, attributes));
+
+       
+
+        this.fieldState.validators(email => new Promise<ValidationResponse>((resolve, reject) => {
+
+
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            resolve(!re.test(email) && "The provided email is not valid");
+
+        }));
+
+        this.withKeyupValueUpdate();
+    }
+}
+
+
+
+export class NumberInputLayout extends InputLayout<number> {
+
+
+    constructor(attributes: InputAttributes<number>) {
+        super(Object.assign({ type: "number" } as InputAttributeInternal, attributes));
+    }
 }
