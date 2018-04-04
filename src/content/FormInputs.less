@@ -1,0 +1,176 @@
+﻿
+@md-default-color: #777;
+@md-focused-color : #d9230f;
+@md-error-color:#d9831f;
+@md-success-color: #469408;
+
+.md-form-group {
+    margin-bottom: 20px;
+    padding: 20px 0;
+    position: relative;
+}
+.md-form-control {
+    background-color: transparent;
+    background-image: none;
+    border-color: #ddd;
+    border-radius: 0;
+    border-style: solid;
+    border-width: 0 0 1px;
+    display: block;
+    font-size: 16px;
+    line-height: 20px;
+    padding: 4px 0;
+    width: 100%;
+    color: @md-default-color;
+}
+
+
+.md-label-floating .md-control-label {
+    -webkit-transition-duration: .2s;
+    -o-transition-duration: .2s;
+    transition-duration: .2s;
+    -webkit-transition-timing-function: cubic-bezier(.4,0,.2,1);
+    -o-transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+}
+
+.md-control-label {
+    bottom: 0;
+    display: block;
+    font-size: 16px;
+    font-weight: 400;
+    left: 0;
+    line-height: 20px;
+    margin-bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    top: 24px;
+    white-space: nowrap;
+    width: 100%;
+    color: @md-default-color;
+}
+
+.md-control-label:after {
+    background-color: @md-focused-color;
+    bottom: 20px;
+    content: '';
+    height: 2px;
+    left: 45%;
+    position: absolute;
+    -webkit-transition-duration: .2s;
+    -o-transition-duration: .2s;
+    transition-duration: .2s;
+    -webkit-transition-timing-function: cubic-bezier(.4,0,.2,1);
+    -o-transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    visibility: hidden;
+    width: 10px;
+}
+
+
+.md-label-floating.has-value .md-control-label, .md-label-floating.is-focused .md-control-label {
+    font-size: 12px;
+    top: 4px;
+    visibility: visible;
+}
+
+.md-form-group.is-focused .md-control-label {
+    color: @md-focused-color;
+}
+
+.md-form-group.is-focused .md-control-label:after {
+    left: 0;
+    visibility: visible;
+    width: 100%;
+}
+
+.md-form-control:focus {
+    outline: 0;
+}
+
+.md-form-group.has-error .md-form-control {
+    border-color: @md-error-color;
+    box-shadow: none;
+}
+
+.md-form-group.has-error .md-control-label, .md-form-group.has-error .md-help-block {
+    color: @md-error-color;
+}
+
+.md-form-group.has-error .md-control-label:after {
+    background-color: @md-error-color;
+}
+
+.md-form-group.has-error .md-control-label, .md-form-group.has-error .md-help-block {
+    color: @md-error-color;
+}
+
+.md-help-block {
+    display: block;
+    margin-top: 3px;
+    position: absolute;
+    visibility: visible;
+    width: 100%;
+}
+
+
+.md-form-group.has-success .md-form-control {
+    border-color: @md-success-color;
+    box-shadow: none;
+}
+
+.md-form-group.has-success .md-control-label, .md-form-group.has-success .md-help-block {
+    color: @md-success-color;
+}
+
+.md-form-group.has-success .md-control-label:after {
+    background-color: @md-success-color;
+}
+
+
+
+
+
+.ripplelink {
+    display: block; 
+    transition: all 0.2s ease;
+    z-index: 0;
+    overflow:hidden;
+}
+
+.ripplelink:hover {
+    z-index: 1000;
+    &.shadow{
+    box-shadow: rgba(0, 0, 0, 0.3) 0 4px 16px 0;
+    }
+}
+
+.ink {
+    display: block;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: scale(0);
+    backface-visibility: hidden;
+}
+
+.animate {
+    animation: ripple 0.6s linear;
+}
+
+/*@keyframes ripple {
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}*/
+
+@keyframes ripple {
+  to {transform: scale(24); opacity:0;}
+}
+@keyframes ripple-shadow {
+  0%   {box-shadow: 0 0 0 rgba(0,0,0,0.0);}
+  20%  {box-shadow: 0 4px 16px rgba(0,0,0,0.3);}
+  100% {box-shadow: 0 0 0 rgba(0,0,0,0.0);}
+}
