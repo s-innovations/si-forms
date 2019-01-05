@@ -247,7 +247,7 @@ export function subscribeWhile<T>(valueFunc: () => T, condFunc: () => boolean, r
 export class InputLayout<T extends number | string> extends JSXLayout<InputAttributes<T>> {
 
     fieldState = new FieldState<T>(isDefined(this.attributes.validate) ? this.attributes.validate:true);
-    valueUpdate = "input";
+    valueUpdate = "change";
 
     @observable hasFocus = false;
 
