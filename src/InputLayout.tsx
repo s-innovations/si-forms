@@ -14,6 +14,7 @@ export interface InputAttributes<T> {
     spellcheck?: boolean;
     autoComplete?: string;
     type?: "number" | "text" | "password" | "email";
+    validate?: boolean;
 }
 export interface InputAttributeInternal {
     type: "number" | "text" | "password" | "email";
@@ -27,7 +28,7 @@ export interface IFieldState<T> {
 }
 
 function isDefined(obj: any) {
-    return !(typeof obj === "undefined" || obj === null);
+    return !(typeof obj === "undefined" || obj === null || obj==="");
 }
 
 
@@ -39,10 +40,10 @@ export interface InputTemplateViewModel<T> {
 
 const InputTemplate = <T extends InputTemplateViewModel<T1>, T1 extends number | string>(attributes: InputAttributes<T1> & InputAttributeInternal) => (
     <div class="md-form-group md-label-floating" data-bind="css:{'is-focused':hasFocus, 'has-value': fieldState.hasValue, 'has-error':fieldState.hasError, 'has-success':fieldState.hasSuccess}">
-        <input id={attributes.key} type={attributes.type} class="md-form-control" autoComplete="{attributes.autoComplete}"
-spellCheck={ attributes.spellcheck }
-name={ attributes.name || attributes.key }
-data-bind="value:fieldState.value, hasfocus: hasFocus, valueUpdate: valueUpdate" />
+        <input id={attributes.key} type={attributes.type} class="md-form-control" autoComplete={attributes.autoComplete}
+        spellCheck={ attributes.spellcheck }
+        name={ attributes.name || attributes.key }
+        data-bind="value:fieldState.value, hasfocus: hasFocus, valueUpdate: valueUpdate" />
     <label class="md-control-label" for={ attributes.key } > { attributes.label } </label>
         <ko if="fieldState.hasError" >
             <span id={ attributes.key + '-error' } class="has-error md-help-block" data-bind="text:fieldState.error" > </span>
@@ -157,78 +158,95 @@ export class FieldState<TValue>{
 
     lastValidationRequest = 0;
 
-    constructor() {
-
-        ko.computed(() => {
-            let value = this.value;
-
-
+    constructor(withValidation = true) {
+        if (withValidation) {
+            ko.computed(() => {
+                let value = this.value;
 
 
-            if (this.canValidate && !ko.computedContext.isInitial()) {
-
-                let validators = this._validators;
-                const lastValidationRequest = ++this.lastValidationRequest;
-
-                this.validating = true;
-                const value = this.value;
 
 
-                return applyValidators(value, validators).then(fieldError => {
+                if (this.canValidate && !ko.computedContext.isInitial()) {
+
+                    let validators = this._validators;
+                    if (validators.length === 0) {
+                        this.hasBeenValidated = false;
+                        return;
+                              
+                    }
+                    const lastValidationRequest = ++this.lastValidationRequest;
+
+                    this.validating = true;
+                    const value = this.value;
 
 
-                    if (this.lastValidationRequest !== lastValidationRequest) {
-                        if (this.hasError) {
-                            return { hasError: true };
+                    return applyValidators(value, validators).then(fieldError => {
+
+
+                        if (this.lastValidationRequest !== lastValidationRequest) {
+                            if (this.hasError) {
+                                return { hasError: true };
+                            }
+                            else {
+                                return {
+                                    hasError: false,
+                                    value: value,
+                                };
+                            }
+                        }
+
+                        this.validating = false;
+                        this.hasBeenValidated = true;
+
+                        /** For any change in field error, update our error */
+                        if (fieldError != this.error) {
+                            this.error = fieldError;
+                        }
+
+                        /** Check for error */
+                        const hasError = this.hasError;
+
+
+                        /** return a result based on error status */
+                        if (hasError) {
+                            return { hasError };
                         }
                         else {
                             return {
-                                hasError: false,
-                                value: value,
+                                hasError,
+                                value
                             };
                         }
-                    }
 
-                    this.validating = false;
-                    this.hasBeenValidated = true;
-
-                    /** For any change in field error, update our error */
-                    if (fieldError != this.error) {
-                        this.error = fieldError;
-                    }
-
-                    /** Check for error */
-                    const hasError = this.hasError;
+                    });
 
 
-                    /** return a result based on error status */
-                    if (hasError) {
-                        return { hasError };
-                    }
-                    else {
-                        return {
-                            hasError,
-                            value
-                        };
-                    }
+                }
 
-                });
-
-
-            }
-
-        }).extend({ rateLimit: 100 });
+            }).extend({ rateLimit: 100 });
+        }
     }
 }
 
 
 
+export function subscribeWhile<T>(valueFunc: () => T, condFunc: () => boolean, read: (value: T) => void) {
 
+    let computed = ko.computed(() => {
+        let value = valueFunc();
+        let cond = condFunc();
+        if (!ko.computedContext.isInitial()) {
+            ko.ignoreDependencies(() => read(value));
+            if(!cond)
+                computed.dispose();
+        }
+    });
+}
 
 @defaults({ key: (o) => o.name })
 export class InputLayout<T extends number | string> extends JSXLayout<InputAttributes<T>> {
 
-    fieldState = new FieldState<T>();
+    fieldState = new FieldState<T>(isDefined(this.attributes.validate) ? this.attributes.validate:true);
     valueUpdate = "input";
 
     @observable hasFocus = false;
@@ -252,7 +270,7 @@ export class InputLayout<T extends number | string> extends JSXLayout<InputAttri
         this.valueUpdate = "keyup";
 
         this.fieldState.canValidate = false;
-        subscribeOnce(() => this.hasFocus, (focus) => this.fieldState.canValidate = this.fieldState.canValidate || !focus);
+        subscribeWhile(() => this.hasFocus, () => this.hasFocus, (focus) => this.fieldState.canValidate = this.fieldState.canValidate || !focus);
 
     }
 
