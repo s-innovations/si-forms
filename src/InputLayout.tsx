@@ -15,6 +15,7 @@ export interface InputAttributes<T> {
     autoComplete?: string;
     type?: "number" | "text" | "password" | "email";
     validate?: boolean;
+    disableBinding?: string;
 }
 export interface InputAttributeInternal {
     type: "number" | "text" | "password" | "email";
@@ -41,9 +42,9 @@ export interface InputTemplateViewModel<T> {
 const InputTemplate = <T extends InputTemplateViewModel<T1>, T1 extends number | string>(attributes: InputAttributes<T1> & InputAttributeInternal) => (
     <div class="md-form-group md-label-floating" data-bind="css:{'is-focused':hasFocus, 'has-value': fieldState.hasValue, 'has-error':fieldState.hasError, 'has-success':fieldState.hasSuccess}">
         <input id={attributes.key} type={attributes.type} class="md-form-control" autoComplete={attributes.autoComplete}
-        spellCheck={ attributes.spellcheck }
-        name={ attributes.name || attributes.key }
-        data-bind="value:fieldState.value, hasfocus: hasFocus, valueUpdate: valueUpdate" />
+            spellCheck={attributes.spellcheck}
+            name={attributes.name || attributes.key}
+            data-bind={`value:fieldState.value, hasfocus: hasFocus, valueUpdate: valueUpdate ${attributes.disableBinding ? ',disable:' + attributes.disableBinding:''}`} />
     <label class="md-control-label" for={ attributes.key } > { attributes.label } </label>
         <ko if="fieldState.hasError" >
             <span id={ attributes.key + '-error' } class="has-error md-help-block" data-bind="text:fieldState.error" > </span>
@@ -296,7 +297,7 @@ export function applyRipplelinks(element:HTMLElement){
 
                 if (!ink.clientHeight && !ink.clientWidth) {
                     let d = Math.min(link.offsetWidth, link.offsetHeight, 100);
-                    console.log(d);
+                    console.log(d); 
                     ink.style.height = d + "px";
                     ink.style.width = d + "px";
 

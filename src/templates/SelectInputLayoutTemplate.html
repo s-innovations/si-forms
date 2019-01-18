@@ -1,0 +1,26 @@
+﻿
+<div class="md-form-group md-label-floating" data-bind="css:{'is-focused':hasFocus, 'has-value': fieldState.hasValue, 'has-error':fieldState.hasError, 'has-success':fieldState.hasSuccess}">
+
+    <div class="select-wrapper mdb-select md-form">
+       
+        <input type="text" class="select-dropdown md-form-control" readonly="readonly" data-bind="click:toggleDropdown,value:fieldState.value">
+        <ul class="dropdown-content select-dropdown w-100" data-bind="css:{open:hasFocus}">
+            <span class="search-wrap ml-2">
+                <div class="md-form mt-0">
+                    <input type="text" class="search form-control w-100 d-block md-form-control" data-bind="attr:{placeholder:searchText}, value:fieldState.value,  hasfocus:openFocused">
+                </div>
+            </span>
+            <!-- ko template:{foreach: items }-->
+            <li class="" data-bind="css:{disabled:disabled, active:active}">
+                <span class="filtrable" data-bind="text:label, click:$parent.selectValue.bind($parent)"></span>
+            </li>
+            <!-- /ko -->
+
+        </ul>
+
+    </div>
+    <label class="md-control-label" data-bind="text:placeholder"></label>
+    <!-- ko if : fieldState.hasError-->
+        <span  class="has-error md-help-block" data-bind="text:fieldState.error"> </span>
+    <!-- /ko -->
+</div>
