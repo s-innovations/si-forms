@@ -1,5 +1,5 @@
 {
-    "version": "1.0.15",
+    "version": "1.0.19",
     "name": "si-forms",
     "author": "Poul K. Sorensen <pks@s-innovations.net> (http://twitter.com/pksorensen)",
     "homepage": "https://www.s-innovations.net",
@@ -9,11 +9,11 @@
     },
     "devDependencies": {
         "@types/requirejs": "2.1.31",
-        "@types/knockout": "3.4.53",
-        "typescript": "3.0.1",
-        "si-kolayout": "1.0.0",
+        "@types/knockout": "3.4.64",
+        "typescript": "3.1.6",
+        "si-kolayout": "1.0.1-pre1",
         "si-decorators": "1.0.1",
-        "si-kolayout-jsx": "1.0.0",
+        "si-kolayout-jsx": "1.0.3",
         "grunt": "1.0.3",
         "grunt-contrib-copy": "1.0.0"
     },

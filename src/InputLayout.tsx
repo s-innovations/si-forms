@@ -47,7 +47,7 @@ const InputTemplate = <T extends InputTemplateViewModel<T1>, T1 extends number |
             data-bind={`value:fieldState.value, hasfocus: hasFocus, valueUpdate: valueUpdate ${attributes.disableBinding ? ',disable:' + attributes.disableBinding:''}`} />
     <label class="md-control-label" for={ attributes.key } > { attributes.label } </label>
         <ko if="fieldState.hasError" >
-            <span id={ attributes.key + '-error' } class="has-error md-help-block" data-bind="text:fieldState.error" > </span>
+            <span id={ attributes.key + '-error' } class="has-error md-help-block" data-bind="html:fieldState.error" > </span>
         </ko>
     </div>
 );
@@ -245,7 +245,7 @@ export function subscribeWhile<T>(valueFunc: () => T, condFunc: () => boolean, r
 }
 
 @defaults({ key: (o) => o.name })
-export class InputLayout<T extends number | string> extends JSXLayout<InputAttributes<T>> {
+export class InputLayout<T extends number | string, TAttributes extends InputAttributes<T> = InputAttributes<T>> extends JSXLayout<TAttributes> {
 
     fieldState = new FieldState<T>(isDefined(this.attributes.validate) ? this.attributes.validate:true);
     valueUpdate = "change";
@@ -253,7 +253,7 @@ export class InputLayout<T extends number | string> extends JSXLayout<InputAttri
     @observable hasFocus = false;
 
 
-    constructor(attributes: InputAttributes<T> & InputAttributeInternal) {
+    constructor(attributes: TAttributes & InputAttributeInternal) {
         super(attributes, InputTemplate<this, T>(attributes));
         console.log(attributes);
         // this.value = attributes.value;

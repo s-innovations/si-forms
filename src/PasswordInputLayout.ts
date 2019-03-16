@@ -311,12 +311,14 @@ Sha1.prototype.arrayBuffer = function () {
 };
 
 
+interface IPasswordInputLayoutAttributes extends InputAttributes<string> {
+    hackedTemplate?: string;
+}
+
+export class PasswordInputLayout extends InputLayout<string, IPasswordInputLayoutAttributes> {
 
 
-export class PasswordInputLayout extends InputLayout<string> {
-
-
-    constructor(attributes: InputAttributes<string>) {
+    constructor(attributes: IPasswordInputLayoutAttributes) {
         super(Object.assign({ type: "password", autoComplete:"current-password" } as InputAttributeInternal, attributes));
 
         let i = 0;
@@ -338,7 +340,7 @@ export class PasswordInputLayout extends InputLayout<string> {
 
                     if (matches) {  
                         //Not so happy
-                        resolve(`Your password have been hacked ${matches[1]} times.`)           
+                        resolve((this.attributes.hackedTemplate || `Your password have been hacked ${matches[1]} times.`).replace(new RegExp("{{count}}", "gi"), matches[1]))           
                     }
 
                     //All is good
